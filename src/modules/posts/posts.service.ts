@@ -26,4 +26,12 @@ export class PostsService {
 
     return savedPost;
   }
+
+  async getPosts(userId: string, sortBy?: 'asc' | 'desc'): Promise<Post[]> {
+    const findUser = await this.userModel.findById(userId);
+    if (!findUser) throw new HttpException('User Not Found', 404);
+
+    const query = this.postModel.find().sort({ createdAt: sortBy });
+    return query.exec();
+  }
 }
