@@ -1,7 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema()
-export class Post {
+export class PostEntity extends Document {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
@@ -12,4 +13,4 @@ export class Post {
   contents: string;
 }
 
-export const postSchema = SchemaFactory.createForClass(Post);
+export const postSchema = SchemaFactory.createForClass(PostEntity);

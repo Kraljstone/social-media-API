@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
 import { PostsService } from './posts.service';
+import { PostEntity } from 'src/schemas/Post.schema';
 
 @Controller('posts')
 export class PostsController {
@@ -18,6 +19,7 @@ export class PostsController {
   @UsePipes(new ValidationPipe())
   createPost(@Body() createPostsDto: CreatePostsDto) {
     this.postsService.createPost(createPostsDto);
+    return { message: 'Post created successfully' };
   }
 
   @Get()
@@ -25,7 +27,9 @@ export class PostsController {
   getPosts(
     @Body('userId') userId: string,
     @Query('sortBy') sortBy?: 'asc' | 'desc',
-  ) {
-    return this.postsService.getPosts(userId, sortBy);
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<PostEntity[]> {
+    return this.postsService.getPosts(userId, sortBy, page, limit);
   }
 }

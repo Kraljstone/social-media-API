@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Post } from 'src/schemas/Post.schema';
+import { PostEntity } from 'src/schemas/Post.schema';
 import { Model } from 'mongoose';
 import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
 import { User } from 'src/schemas/User.schema';
@@ -8,7 +8,7 @@ import { User } from 'src/schemas/User.schema';
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectModel(Post.name) private postModel: Model<Post>,
+    @InjectModel(PostEntity.name) private postModel: Model<PostEntity>,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
@@ -27,11 +27,26 @@ export class PostsService {
     return savedPost;
   }
 
-  async getPosts(userId: string, sortBy?: 'asc' | 'desc'): Promise<Post[]> {
+  async getPosts(
+    userId: string,
+    sortBy?: 'asc' | 'desc',
+    page?: number,
+    limit?: number,
+  ): Promise<PostEntity[]> {
     const findUser = await this.userModel.findById(userId);
     if (!findUser) throw new HttpException('User Not Found', 404);
 
-    const query = this.postModel.find().sort({ createdAt: sortBy });
+    const skip = (page - 1) * limit;
+
+    let query = this.postModel.find();
+
+    if (sortBy) {
+      const sortOrder = sortBy === 'desc' ? -1 : 1;
+      query = query.sort({ createdAt: sortOrder });
+    }
+
+    query = query.skip(skip).limit(limit);
+
     return query.exec();
   }
 }
