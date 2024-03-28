@@ -11,7 +11,7 @@ import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
 import { PostsService } from './posts.service';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('posts')
 export class PostsController {

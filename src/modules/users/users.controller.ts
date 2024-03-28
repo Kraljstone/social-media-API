@@ -15,7 +15,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
