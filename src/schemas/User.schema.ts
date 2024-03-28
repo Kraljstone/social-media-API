@@ -8,6 +8,9 @@ export class User {
   @Prop({ unique: true, required: true })
   username: string;
 
+  @Prop({ required: true })
+  password: string;
+
   @Prop({ required: false })
   displayName?: string;
 
@@ -17,7 +20,7 @@ export class User {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserSettings' })
   settings?: UserSettings;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PostEntity' }] })
   posts: PostEntity[];
 }
 

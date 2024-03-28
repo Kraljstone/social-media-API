@@ -10,12 +10,15 @@ import {
 import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
 import { PostsService } from './posts.service';
 import { PostEntity } from 'src/schemas/Post.schema';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt/jwt.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   createPost(@Body() createPostsDto: CreatePostsDto) {
     this.postsService.createPost(createPostsDto);
@@ -23,6 +26,7 @@ export class PostsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   getPosts(
     @Body('userId') userId: string,

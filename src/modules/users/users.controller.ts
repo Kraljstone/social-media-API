@@ -9,30 +9,33 @@ import {
   Param,
   HttpException,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt/jwt.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post()
+  @Post('signup')
   @UsePipes(new ValidationPipe())
   createUser(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
     return this.usersService.createUser(createUserDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getUsers() {
     return this.usersService.getUsers();
   }
 
   //users/:id
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);
@@ -45,6 +48,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async updateUser(
     @Param('id') id: string,
@@ -61,6 +65,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteUser(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);
