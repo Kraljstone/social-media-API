@@ -4,10 +4,11 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  MaxLength,
   ValidateNested,
 } from 'class-validator';
 
-export class CreateUserSettingsDto {
+export class RegisterUserSettingsDto {
   @IsOptional()
   @IsBoolean()
   receiveNotification?: boolean;
@@ -21,21 +22,24 @@ export class CreateUserSettingsDto {
   receiveSMS?: boolean;
 }
 
-export class CreateUserDto {
+export class RegisterUserDto {
   @IsNotEmpty()
   @IsString()
+  @MaxLength(32)
   username: string;
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(32)
   password: string;
 
   @IsString()
   @IsOptional()
+  @MaxLength(32)
   displayName?: string;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => CreateUserSettingsDto)
-  settings?: CreateUserSettingsDto;
+  @Type(() => RegisterUserSettingsDto)
+  settings?: RegisterUserSettingsDto;
 }

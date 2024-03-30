@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Post,
   Get,
   Patch,
   UsePipes,
@@ -12,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -21,12 +19,6 @@ import { Routes } from 'src/utils/types';
 @Controller(Routes.USERS)
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @Post('signup')
-  @UsePipes(new ValidationPipe())
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
-  }
 
   @Get()
   @UseGuards(JwtAuthGuard)

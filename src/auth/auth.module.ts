@@ -9,6 +9,9 @@ import { userSchema } from 'src/schemas/User.schema';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserSettings } from 'src/schemas/UserSettings.schema';
+import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
+import { Services } from 'src/utils/types';
 
 export const authSecret = generateRandomString(32);
 
@@ -19,6 +22,10 @@ export const authSecret = generateRandomString(32);
         name: User.name,
         schema: userSchema,
       },
+      {
+        name: UserSettings.name,
+        schema: UserSettingsSchema,
+      },
     ]),
     JwtModule.register({
       secret: authSecret,
@@ -27,6 +34,14 @@ export const authSecret = generateRandomString(32);
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    {
+      provide: Services.AUTH,
+      useClass: AuthService,
+    },
+  ],
 })
 export class AuthModule {}

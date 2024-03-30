@@ -3,3 +3,7 @@ export enum Routes {
   USERS = 'users',
   POSTS = 'posts',
 }
+
+export enum Services {
+  AUTH = 'AUTH_SERVICE',
+}
