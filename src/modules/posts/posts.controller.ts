@@ -12,11 +12,13 @@ import { PostsService } from './posts.service';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Routes } from 'src/utils/types';
 
-@Controller('posts')
+@Controller(Routes.POSTS)
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
+  // posts
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())

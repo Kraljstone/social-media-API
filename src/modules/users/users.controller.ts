@@ -16,8 +16,9 @@ import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Routes } from 'src/utils/types';
 
-@Controller('users')
+@Controller(Routes.USERS)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 

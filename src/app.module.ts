@@ -7,6 +7,7 @@ import { PostsModule } from './modules/posts/posts.module';
 import { JwtModule } from '@nestjs/jwt';
 import { generateRandomString } from './utils/random-string';
 import { AuthModule } from './auth/auth.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     PostsModule,
     AuthModule,
+    GatewayModule,
   ],
 })
 export class AppModule {}
