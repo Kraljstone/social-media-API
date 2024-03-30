@@ -1,12 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
+import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
+import * as bcrypt from 'bcrypt';
+import { UserSettings } from 'src/schemas/UserSettings.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(UserSettings.name)
+    private readonly userSettingsModel: Model<UserSettings>,
+  ) {}
+
+  async createUser({ settings, password, ...createUserDto }: CreateUserDto) {
+    const existingUser = await this.userModel.findOne({
+      username: createUserDto.username,
+    });
+
+    if (existingUser) {
+      throw new HttpException('Username is already taken', HttpStatus.CONFLICT);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (settings) {
+      const newSettings = new this.userSettingsModel(settings);
+      const savedNewSettings = await newSettings.save();
+
+      const newUser = new this.userModel({
+        ...createUserDto,
+        password: hashedPassword,
+        settings: savedNewSettings._id,
+      });
+
+      return newUser.save();
+    }
+
+    const newUser = new this.userModel({
+      password: hashedPassword,
+      ...createUserDto,
+    });
+
+    return newUser.save();
+  }
 
   getUsers() {
     return this.userModel.find().populate(['settings', 'posts']);

@@ -12,7 +12,7 @@ import { PostsService } from './posts.service';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Routes } from 'src/utils/types';
+import { Routes } from 'src/utils/constants';
 
 @Controller(Routes.POSTS)
 export class PostsController {

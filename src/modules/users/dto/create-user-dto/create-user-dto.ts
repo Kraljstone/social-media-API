@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class RegisterUserSettingsDto {
+export class CreateUserSettingsDto {
   @IsOptional()
   @IsBoolean()
   receiveNotification?: boolean;
@@ -22,7 +22,7 @@ export class RegisterUserSettingsDto {
   receiveSMS?: boolean;
 }
 
-export class RegisterUserDto {
+export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(32)
@@ -40,6 +40,6 @@ export class RegisterUserDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => RegisterUserSettingsDto)
-  settings?: RegisterUserSettingsDto;
+  @Type(() => CreateUserSettingsDto)
+  settings?: CreateUserSettingsDto;
 }

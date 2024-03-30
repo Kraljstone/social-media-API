@@ -14,7 +14,7 @@ import { UsersService } from './users.service';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Routes } from 'src/utils/types';
+import { Routes } from 'src/utils/constants';
 
 @Controller(Routes.USERS)
 export class UsersController {

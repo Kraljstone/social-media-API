@@ -9,9 +9,10 @@ import { userSchema } from 'src/schemas/User.schema';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { Services } from 'src/utils/constants';
+import { UsersService } from 'src/modules/users/users.service';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
 import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
-import { Services } from 'src/utils/types';
 
 export const authSecret = generateRandomString(32);
 
@@ -36,6 +37,7 @@ export const authSecret = generateRandomString(32);
   controllers: [AuthController],
   providers: [
     AuthService,
+    UsersService,
     LocalStrategy,
     JwtStrategy,
     {
