@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
-import { CreateUserDto } from './dto/create-user-dto/create-user-dto';
-import * as bcrypt from 'bcrypt';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
+import { CreateUserDetails } from 'src/utils/types';
+import { hashPassword } from 'src/utils/helpers';
 
 @Injectable()
 export class UsersService {
@@ -15,23 +15,23 @@ export class UsersService {
     private readonly userSettingsModel: Model<UserSettings>,
   ) {}
 
-  async createUser({ settings, password, ...createUserDto }: CreateUserDto) {
+  async createUser({ settings, password, ...createUser }: CreateUserDetails) {
     const existingUser = await this.userModel.findOne({
-      username: createUserDto.username,
+      username: createUser.username,
     });
 
     if (existingUser) {
       throw new HttpException('Username is already taken', HttpStatus.CONFLICT);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
 
     if (settings) {
       const newSettings = new this.userSettingsModel(settings);
       const savedNewSettings = await newSettings.save();
 
       const newUser = new this.userModel({
-        ...createUserDto,
+        ...createUser,
         password: hashedPassword,
         settings: savedNewSettings._id,
       });
@@ -41,7 +41,7 @@ export class UsersService {
 
     const newUser = new this.userModel({
       password: hashedPassword,
-      ...createUserDto,
+      ...createUser,
     });
 
     return newUser.save();

@@ -11,7 +11,7 @@ import { AuthPayloadDto } from './dto/auth.dto/auth.dto';
 import { AuthService } from './auth.service';
 import { LocalGuard } from './guards/local.guard';
 import { Routes, Services } from 'src/utils/constants';
-import { CreateUserDto } from 'src/modules/users/dto/create-user-dto/create-user-dto';
+import { CreateUserDto } from 'src/auth/dto/create-user-dto/create-user-dto';
 import { UsersService } from 'src/modules/users/users.service';
 
 @Controller(Routes.AUTH)
