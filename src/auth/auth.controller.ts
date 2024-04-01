@@ -23,14 +23,14 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
-  // api/auth/register
+  // @route  api/auth/register
   @Post('register')
   @UsePipes(new ValidationPipe())
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
-  // api/auth/login
+  // @route  api/auth/login
   @Post('login')
   @UseGuards(LocalGuard)
   login(@Body() authPayload: AuthPayloadDto) {

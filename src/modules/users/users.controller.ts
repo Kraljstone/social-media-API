@@ -27,7 +27,7 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
-  //api/users/:id
+  // @route api/users/:id
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
@@ -67,6 +67,7 @@ export class UsersController {
     const deletedUser = await this.usersService.deleteUser(id);
 
     if (!deletedUser) throw new HttpException('User Not Found', 404);
-    console.log(deletedUser);
+
+    return { message: 'User deleted successfully' };
   }
 }

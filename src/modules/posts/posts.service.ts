@@ -14,10 +14,12 @@ export class PostsService {
 
   async createPost({ userId, ...createPostsDto }: CreatePostDetails) {
     const findUser = await this.userModel.findById(userId);
+
     if (!findUser) throw new HttpException('User Not Found', 404);
     const newPost = new this.postModel({ ...createPostsDto, user: userId });
 
     const savedPost = await newPost.save();
+
     await findUser.updateOne({
       $push: {
         posts: savedPost._id,
@@ -34,6 +36,7 @@ export class PostsService {
     limit?: number,
   ): Promise<PostEntity[]> {
     const findUser = await this.userModel.findById(userId);
+
     if (!findUser) throw new HttpException('User Not Found', 404);
 
     const skip = (page - 1) * limit;

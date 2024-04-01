@@ -2,10 +2,10 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
-import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
 import { CreateUserDetails } from 'src/utils/types';
 import { hashPassword } from 'src/utils/helpers';
+import { UpdateUserDetails } from 'src/utils/types';
 
 @Injectable()
 export class UsersService {
@@ -55,7 +55,7 @@ export class UsersService {
     return this.userModel.findById(id).populate('settings');
   }
 
-  updateUser(id: string, updateUserDto: UpdateUserDto) {
+  updateUser(id: string, updateUserDto: UpdateUserDetails) {
     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
   }
 

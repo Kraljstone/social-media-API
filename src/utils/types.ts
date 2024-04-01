@@ -27,3 +27,8 @@ export type AuthPayload = {
   username: string;
   password: string;
 };
+
+export type UpdateUserDetails = {
+  displayName?: string;
+  avatarUrl?: string;
+};

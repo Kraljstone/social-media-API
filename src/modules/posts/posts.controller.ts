@@ -20,7 +20,8 @@ import { Services } from 'src/utils/constants';
 export class PostsController {
   constructor(@Inject(Services.POSTS) private postsService: PostsService) {}
 
-  // api/posts
+  // @route  api/posts
+
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
