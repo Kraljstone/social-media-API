@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { Model } from 'mongoose';
-import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
+import { CreatePostDetails } from 'src/utils/types';
 import { User } from 'src/schemas/User.schema';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class PostsService {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
-  async createPost({ userId, ...createPostsDto }: CreatePostsDto) {
+  async createPost({ userId, ...createPostsDto }: CreatePostDetails) {
     const findUser = await this.userModel.findById(userId);
     if (!findUser) throw new HttpException('User Not Found', 404);
     const newPost = new this.postModel({ ...createPostsDto, user: userId });

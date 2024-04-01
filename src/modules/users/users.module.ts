@@ -21,7 +21,6 @@ import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
     ]),
   ],
   providers: [
-    UsersService,
     {
       provide: Services.USERS,
       useClass: UsersService,

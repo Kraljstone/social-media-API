@@ -4,6 +4,7 @@ import { PostEntity, postSchema } from 'src/schemas/Post.schema';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { User, userSchema } from 'src/schemas/User.schema';
+import { Services } from 'src/utils/constants';
 
 @Module({
   imports: [
@@ -19,6 +20,11 @@ import { User, userSchema } from 'src/schemas/User.schema';
     ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [
+    {
+      provide: Services.POSTS,
+      useClass: PostsService,
+    },
+  ],
 })
 export class PostsModule {}

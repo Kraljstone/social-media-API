@@ -26,21 +26,23 @@ import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
       },
     ]),
     JwtModule.register({
-      secret: process.env.COOKIE_SECRET,
+      secret: process.env.SECRET,
       signOptions: { expiresIn: '1d' },
     }),
     PassportModule,
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
-    UsersService,
-    LocalStrategy,
-    JwtStrategy,
     {
       provide: Services.AUTH,
       useClass: AuthService,
     },
+    {
+      provide: Services.USERS,
+      useClass: UsersService,
+    },
+    LocalStrategy,
+    JwtStrategy,
   ],
 })
 export class AuthModule {}

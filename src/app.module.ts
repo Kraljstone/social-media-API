@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { ConversationsModule } from './modules/chat/conversations/conversations.module';
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import { GatewayModule } from './gateway/gateway.module';
       load: [config],
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
+    AuthModule,
     UserModule,
     PostsModule,
-    AuthModule,
     GatewayModule,
+    ConversationsModule,
   ],
 })
 export class AppModule {}

@@ -9,16 +9,17 @@ import {
   HttpException,
   Delete,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Routes } from 'src/utils/constants';
+import { Routes, Services } from 'src/utils/constants';
 
 @Controller(Routes.USERS)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(@Inject(Services.USERS) private usersService: UsersService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -26,7 +27,7 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
-  //users/:id
+  //api/users/:id
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {

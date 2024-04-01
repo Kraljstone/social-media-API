@@ -6,6 +6,7 @@ import {
   UsePipes,
   ValidationPipe,
   Query,
+  Inject,
 } from '@nestjs/common';
 import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
 import { PostsService } from './posts.service';
@@ -13,12 +14,13 @@ import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes } from 'src/utils/constants';
+import { Services } from 'src/utils/constants';
 
 @Controller(Routes.POSTS)
 export class PostsController {
-  constructor(private postsService: PostsService) {}
+  constructor(@Inject(Services.POSTS) private postsService: PostsService) {}
 
-  // posts
+  // api/posts
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())

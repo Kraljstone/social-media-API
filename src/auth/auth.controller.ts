@@ -17,18 +17,20 @@ import { UsersService } from 'src/modules/users/users.service';
 @Controller(Routes.AUTH)
 export class AuthController {
   constructor(
-    @Inject(Services.AUTH) private authService: AuthService,
+    @Inject(Services.AUTH)
+    private authService: AuthService,
+    @Inject(Services.USERS)
     private usersService: UsersService,
   ) {}
 
-  // auth/register
+  // api/auth/register
   @Post('register')
   @UsePipes(new ValidationPipe())
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
-  // auth/login
+  // api/auth/login
   @Post('login')
   @UseGuards(LocalGuard)
   login(@Body() authPayload: AuthPayloadDto) {

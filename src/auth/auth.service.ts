@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthPayloadDto } from './dto/auth.dto/auth.dto';
+import { AuthPayload } from 'src/utils/types';
 import { User } from 'src/schemas/User.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,7 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser({ username, password }: AuthPayloadDto) {
+  async validateUser({ username, password }: AuthPayload) {
     const user = await this.userModel.findOne({ username });
 
     if (!user) {
@@ -32,7 +32,7 @@ export class AuthService {
 
     const payload = { username: user.username };
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.COOKIE_SECRET,
+      secret: process.env.SECRET,
     });
 
     return accessToken;
