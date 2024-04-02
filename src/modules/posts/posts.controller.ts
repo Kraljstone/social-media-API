@@ -25,7 +25,7 @@ export class PostsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  createPost(@Body() createPostsDto: CreatePostsDto) {
+  createPost(@Body() createPostsDto: CreatePostsDto): { message: string } {
     this.postsService.createPost(createPostsDto);
     return { message: 'Post created successfully' };
   }

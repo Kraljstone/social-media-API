@@ -2,17 +2,17 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { Model } from 'mongoose';
-import { CreatePostDetails } from 'src/utils/types';
 import { User } from 'src/schemas/User.schema';
+import { IPostService } from './posts';
 
 @Injectable()
-export class PostsService {
+export class PostsService implements IPostService {
   constructor(
-    @InjectModel(PostEntity.name) private postModel: Model<PostEntity>,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(PostEntity.name) private readonly postModel: Model<PostEntity>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async createPost({ userId, ...createPostsDto }: CreatePostDetails) {
+  async createPost({ userId, ...createPostsDto }) {
     const findUser = await this.userModel.findById(userId);
 
     if (!findUser) throw new HttpException('User Not Found', 404);
@@ -34,7 +34,7 @@ export class PostsService {
     sortBy?: 'asc' | 'desc',
     page?: number,
     limit?: number,
-  ): Promise<PostEntity[]> {
+  ) {
     const findUser = await this.userModel.findById(userId);
 
     if (!findUser) throw new HttpException('User Not Found', 404);

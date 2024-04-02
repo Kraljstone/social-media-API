@@ -6,11 +6,12 @@ import { UserSettings } from 'src/schemas/UserSettings.schema';
 import { CreateUserDetails } from 'src/utils/types';
 import { hashPassword } from 'src/utils/helpers';
 import { UpdateUserDetails } from 'src/utils/types';
+import { IUserService } from './user';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(UserSettings.name)
     private readonly userSettingsModel: Model<UserSettings>,
   ) {}

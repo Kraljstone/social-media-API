@@ -16,6 +16,7 @@ import mongoose from 'mongoose';
 import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes, Services } from 'src/utils/constants';
+import { User } from 'src/schemas/User.schema';
 
 @Controller(Routes.USERS)
 export class UsersController {
@@ -23,14 +24,14 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getUsers() {
+  getUsers(): Promise<User[]> {
     return this.usersService.getUsers();
   }
 
   // @route api/users/:id
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getUserById(@Param('id') id: string) {
+  async getUserById(@Param('id') id: string): Promise<User> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);
 
@@ -47,7 +48,7 @@ export class UsersController {
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<User> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('Invalid ID', 404);
 
@@ -60,7 +61,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string): Promise<object> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);
 

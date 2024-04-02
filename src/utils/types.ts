@@ -1,3 +1,8 @@
+export type ValidateUserDetails = {
+  username: string;
+  password: string;
+};
+
 export type CreateUserDetails = {
   username: string;
   password: string;
@@ -21,11 +26,6 @@ export type CreatePostDetails = {
   title: string;
   contents: string;
   userId: string;
-};
-
-export type AuthPayload = {
-  username: string;
-  password: string;
 };
 
 export type UpdateUserDetails = {

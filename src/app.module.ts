@@ -7,6 +7,7 @@ import { PostsModule } from './modules/posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { ConversationsModule } from './modules/chat/conversations/conversations.module';
+import { ParticipantsModule } from './modules/chat/participants/participants.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConversationsModule } from './modules/chat/conversations/conversations.
     PostsModule,
     GatewayModule,
     ConversationsModule,
+    ParticipantsModule,
   ],
 })
 export class AppModule {}
