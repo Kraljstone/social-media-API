@@ -1,7 +1,7 @@
 import { PostEntity } from 'src/schemas/Post.schema';
 import { CreatePostDetails } from 'src/utils/types';
 
-export interface IPostService {
+export interface IPostsService {
   createPost({
     userId,
     ...createPostsDto

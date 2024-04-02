@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
-import { IPostService } from './posts';
+import { IPostsService } from './posts';
 
 @Injectable()
-export class PostsService implements IPostService {
+export class PostsService implements IPostsService {
   constructor(
     @InjectModel(PostEntity.name) private readonly postModel: Model<PostEntity>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
