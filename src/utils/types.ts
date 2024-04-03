@@ -32,3 +32,8 @@ export type UpdateUserDetails = {
   displayName?: string;
   avatarUrl?: string;
 };
+
+export type ChatRoomDetails = {
+  chatRoomName: string;
+  participantId: string;
+};

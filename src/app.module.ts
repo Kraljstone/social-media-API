@@ -6,8 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { GatewayModule } from './gateway/gateway.module';
-import { ConversationsModule } from './modules/chat/conversations/conversations.module';
-import { ParticipantsModule } from './modules/chat/participants/participants.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -20,8 +19,7 @@ import { ParticipantsModule } from './modules/chat/participants/participants.mod
     UserModule,
     PostsModule,
     GatewayModule,
-    ConversationsModule,
-    ParticipantsModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
