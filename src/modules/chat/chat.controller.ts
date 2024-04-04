@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Param,
-  Inject,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Post, Body, Param, Inject } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Services } from 'src/utils/constants';
 import { Routes } from 'src/utils/constants';
@@ -29,7 +22,7 @@ export class ChatController {
 
   @Post(':roomId/join')
   async joinChatRoom(
-    @Param('roomId', ParseUUIDPipe) roomId: string,
+    @Param('roomId') roomId: string,
     @Body() joinChatRoomDto: JoinChatRoomDto,
   ) {
     return this.chatService.joinChatRoom(roomId, joinChatRoomDto);
@@ -37,7 +30,7 @@ export class ChatController {
 
   @Post(':roomId/leave')
   async leaveChatRoom(
-    @Param('roomId', ParseUUIDPipe) roomId: string,
+    @Param('roomId') roomId: string,
     @Body() leaveChatRoomDto: LeaveChatRoomDto,
   ) {
     return this.chatService.leaveChatRoom(roomId, leaveChatRoomDto);
@@ -45,7 +38,7 @@ export class ChatController {
 
   @Post(':roomId/messages')
   async sendMessage(
-    @Param('roomId', ParseUUIDPipe) roomId: string,
+    @Param('roomId') roomId: string,
     @Body() sendMessageDto: SendMessageDto,
   ) {
     return this.chatService.sendMessage(roomId, sendMessageDto);
