@@ -17,7 +17,6 @@ export class Gateway implements OnModuleInit {
     if (!this.server) {
       throw new Error('WebSocket server is not available.');
     }
-
     this.server.on('connection', (socket: Socket) => {
       console.log(`Socket connected: ${socket.id}`);
     });
