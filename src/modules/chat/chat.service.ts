@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ChatRoom } from 'src/schemas/ChatRoom.schema';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
+import { Gateway } from 'src/gateway/gateway';
 
 export class Message {
   senderId: string;
@@ -16,6 +17,7 @@ export class ChatService implements IChatService {
   constructor(
     @InjectModel(ChatRoom.name) private readonly chatModel: Model<ChatRoom>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly gateway: Gateway,
   ) {}
 
   async createChatRoom({ chatRoomName, participantId }) {
@@ -38,6 +40,8 @@ export class ChatService implements IChatService {
 
     await chatRoom.save();
 
+    this.gateway.server.emit('newChatRoom', chatRoom);
+
     return chatRoom;
   }
 
@@ -55,6 +59,8 @@ export class ChatService implements IChatService {
     chatRoom.participantIds.push(participantId);
 
     await chatRoom.save();
+
+    this.gateway.server.emit('updatedChatRoom', chatRoom);
 
     return { message: 'User joined chat room successfully.' };
   }
@@ -76,6 +82,8 @@ export class ChatService implements IChatService {
 
     await chatRoom.save();
 
+    this.gateway.server.emit('updatedChatRoom', chatRoom);
+
     return { message: 'User left chat room successfully.' };
   }
 
@@ -95,6 +103,8 @@ export class ChatService implements IChatService {
     chatRoom.messages.push(newMessage);
 
     await chatRoom.save();
+
+    this.gateway.server.emit('newMessage', message);
 
     return newMessage;
   }

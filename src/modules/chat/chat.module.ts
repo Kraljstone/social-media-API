@@ -7,6 +7,7 @@ import { ChatRoom } from 'src/schemas/ChatRoom.schema';
 import { Services } from 'src/utils/constants';
 import { User } from 'src/schemas/User.schema';
 import { userSchema } from 'src/schemas/User.schema';
+import { Gateway } from 'src/gateway/gateway';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { userSchema } from 'src/schemas/User.schema';
       provide: Services.CHAT,
       useClass: ChatService,
     },
+    Gateway,
   ],
 })
 export class ChatModule {}
