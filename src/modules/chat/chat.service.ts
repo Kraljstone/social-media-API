@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IChatService } from './chat';
 import { InjectModel } from '@nestjs/mongoose';
 import { ChatRoom } from 'src/schemas/ChatRoom.schema';
@@ -20,17 +20,20 @@ export class ChatService implements IChatService {
     private readonly gateway: Gateway,
   ) {}
 
-  async createChatRoom({ chatRoomName, participantId }) {
+  async createChatRoom({ chatRoomName, participantId }: any) {
     const existingChatRoom = await this.chatModel.findOne({ chatRoomName });
 
     if (existingChatRoom) {
-      throw new HttpException('Chat room name already in use.', 400);
+      throw new HttpException(
+        'Chat room name already in use.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const user = await this.userModel.findById(participantId);
 
     if (!user) {
-      throw new HttpException('Invalid participant ID.', 404);
+      throw new HttpException('Invalid participant ID.', HttpStatus.NOT_FOUND);
     }
 
     const chatRoom = new this.chatModel({
