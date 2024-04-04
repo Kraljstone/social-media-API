@@ -25,15 +25,10 @@ export class Gateway implements OnModuleInit {
 
   @SubscribeMessage('newMessage')
   onNewMessage(@MessageBody() body: any): void {
-    console.log('New message:', body);
-
     if (!this.server) {
       throw new Error('WebSocket server is not available.');
     }
 
-    this.server.emit('onMessage', {
-      msg: 'NewMessage',
-      content: body,
-    });
+    this.server.emit('newMessage', body);
   }
 }
