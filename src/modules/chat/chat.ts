@@ -7,5 +7,5 @@ export interface IChatService {
   }: ChatRoomDetails): Promise<object>;
   joinChatRoom(roomId: string, joinChatRoomDto: object): Promise<object>;
   leaveChatRoom(roomId: string, joinChatRoomDto: object): Promise<object>;
-  sendMessage(roomId: string, sendMessageDto: object): any;
+  sendMessage(roomId: string, sendMessageDto: object): Promise<object>;
 }

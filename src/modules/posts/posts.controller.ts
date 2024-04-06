@@ -15,6 +15,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes } from 'src/utils/constants';
 import { Services } from 'src/utils/constants';
+import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.POSTS)
 export class PostsController {
@@ -23,6 +24,7 @@ export class PostsController {
   // @route  api/posts
 
   @Post()
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   createPost(@Body() createPostsDto: CreatePostsDto): { message: string } {
@@ -31,6 +33,7 @@ export class PostsController {
   }
 
   @Get()
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   getPosts(

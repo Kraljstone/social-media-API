@@ -17,12 +17,14 @@ import { UpdateUserDto } from './dto/update-user-dto/update-user-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes, Services } from 'src/utils/constants';
 import { User } from 'src/schemas/User.schema';
+import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.USERS)
 export class UsersController {
   constructor(@Inject(Services.USERS) private usersService: UsersService) {}
 
   @Get()
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   getUsers(): Promise<User[]> {
     return this.usersService.getUsers();
@@ -30,6 +32,7 @@ export class UsersController {
 
   // @route api/users/:id
   @Get(':id')
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string): Promise<User> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
@@ -43,6 +46,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async updateUser(
@@ -60,6 +64,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
   async deleteUser(@Param('id') id: string): Promise<object> {
     const isValid = mongoose.Types.ObjectId.isValid(id);

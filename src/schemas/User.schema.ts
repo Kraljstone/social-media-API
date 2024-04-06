@@ -5,6 +5,9 @@ import { PostEntity } from './Post.schema';
 
 @Schema()
 export class User {
+  @Prop({ overwrite: false })
+  _id: string;
+
   @Prop({ unique: true, required: true })
   username: string;
 

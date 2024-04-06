@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Param, Inject } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Inject,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Services } from 'src/utils/constants';
 import { Routes } from 'src/utils/constants';
@@ -8,6 +17,8 @@ import {
   LeaveChatRoomDto,
 } from './dto/join-chat-room-dto/join-chat-room-dto';
 import { SendMessageDto } from './send-message-dto/send-message-dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.CHAT)
 export class ChatController {
@@ -16,11 +27,17 @@ export class ChatController {
   ) {}
 
   @Post()
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
   async createChatRoom(@Body() createChatRoomDto: CreateChatRoomDto) {
     return this.chatService.createChatRoom(createChatRoomDto);
   }
 
   @Post(':roomId/join')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
   async joinChatRoom(
     @Param('roomId') roomId: string,
     @Body() joinChatRoomDto: JoinChatRoomDto,
@@ -29,6 +46,9 @@ export class ChatController {
   }
 
   @Post(':roomId/leave')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
   async leaveChatRoom(
     @Param('roomId') roomId: string,
     @Body() leaveChatRoomDto: LeaveChatRoomDto,
@@ -37,6 +57,9 @@ export class ChatController {
   }
 
   @Post(':roomId/messages')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
   async sendMessage(
     @Param('roomId') roomId: string,
     @Body() sendMessageDto: SendMessageDto,
