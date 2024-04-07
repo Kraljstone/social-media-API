@@ -19,6 +19,7 @@ import {
 import { SendMessageDto } from './send-message-dto/send-message-dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller(Routes.CHAT)
 export class ChatController {
@@ -56,6 +57,7 @@ export class ChatController {
     return this.chatService.leaveChatRoom(roomId, leaveChatRoomDto);
   }
 
+  @SkipThrottle()
   @Post(':roomId/messages')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(JwtAuthGuard)
