@@ -9,7 +9,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
-import { PostsService } from './posts.service';
+import { IPostsService } from './posts';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -19,7 +19,7 @@ import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.POSTS)
 export class PostsController {
-  constructor(@Inject(Services.POSTS) private postsService: PostsService) {}
+  constructor(@Inject(Services.POSTS) private postsService: IPostsService) {}
 
   // @route  api/posts
 

@@ -5,7 +5,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { Services } from 'src/utils/constants';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
-import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
+import { userSettingsSchema } from 'src/schemas/UserSettings.schema';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
       },
       {
         name: UserSettings.name,
-        schema: UserSettingsSchema,
+        schema: userSettingsSchema,
       },
     ]),
   ],

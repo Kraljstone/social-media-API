@@ -10,6 +10,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from './utils/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { FriendRequestModule } from './modules/friend-request/friend-request.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { APP_GUARD } from '@nestjs/core';
     PostsModule,
     GatewayModule,
     ChatModule,
+    FriendRequestModule,
   ],
 
   providers: [

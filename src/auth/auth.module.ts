@@ -10,7 +10,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { Services } from 'src/utils/constants';
 import { UsersService } from 'src/modules/users/users.service';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
-import { UserSettingsSchema } from 'src/schemas/UserSettings.schema';
+import { userSettingsSchema } from 'src/schemas/UserSettings.schema';
 import { SessionSerializer } from './utils/seassionSerializer';
 import { PassportModule } from '@nestjs/passport';
 
@@ -23,7 +23,7 @@ import { PassportModule } from '@nestjs/passport';
       },
       {
         name: UserSettings.name,
-        schema: UserSettingsSchema,
+        schema: userSettingsSchema,
       },
     ]),
     JwtModule.register({

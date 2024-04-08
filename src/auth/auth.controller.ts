@@ -8,20 +8,20 @@ import {
   Inject,
 } from '@nestjs/common';
 import { AuthPayloadDto } from './dto/auth.dto/auth.dto';
-import { AuthService } from './auth.service';
+import { IAuthService } from './auth';
 import { LocalGuard } from './guards/local.guard';
 import { Routes, Services } from 'src/utils/constants';
 import { CreateUserDto } from 'src/auth/dto/create-user-dto/create-user-dto';
-import { UsersService } from 'src/modules/users/users.service';
+import { IUserService } from 'src/modules/users/user';
 import { User } from 'src/schemas/User.schema';
 
 @Controller(Routes.AUTH)
 export class AuthController {
   constructor(
     @Inject(Services.AUTH)
-    private authService: AuthService,
+    private authService: IAuthService,
     @Inject(Services.USERS)
-    private usersService: UsersService,
+    private usersService: IUserService,
   ) {}
 
   // @route  api/auth/register
