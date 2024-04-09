@@ -39,7 +39,13 @@ export type ChatRoomDetails = {
 };
 
 export type FriendRequestDetails = {
-  senderUsername: string;
-  receiverUsername: string;
+  sender: string;
+  receiver: string;
+  status: string;
+};
+
+export type UpdateFriendRequestDetails = {
+  sender: string;
+  receiver: string;
   status: string;
 };

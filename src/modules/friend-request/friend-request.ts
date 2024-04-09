@@ -1,12 +1,15 @@
-// import { FriendRequestDetails } from 'src/utils/types';
+import {
+  FriendRequestDetails,
+  UpdateFriendRequestDetails,
+} from 'src/utils/types';
 
 export interface IFriendRequestService {
-  create(createFriendRequestDto: object): Promise<any>;
-  // findAll(): Promise<FriendRequestDetails[]>;
-  // findOne(id: number): Promise<FriendRequestDetails>;
-  // update(
-  //   id: number,
-  //   updateFriendRequestDto: FriendRequestDetails,
-  // ): Promise<FriendRequestDetails>;
+  createFriendRequest(createFriendRequestDto: object): Promise<any>;
+  getAllFriendRequests(): Promise<FriendRequestDetails[]>;
+  getFriendRequestById(id: string): Promise<FriendRequestDetails>;
+  updateFriendRequest(
+    id: string,
+    updateFriendRequestDto: UpdateFriendRequestDetails,
+  ): Promise<UpdateFriendRequestDetails>;
   // remove(id: number): Promise<void>;
 }

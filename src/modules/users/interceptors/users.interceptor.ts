@@ -13,8 +13,7 @@ export class UsersInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler<User[]>,
-  ): Observable<any> | Promise<Observable<any>> {
-    console.log(context.getClass().name);
+  ): Observable<User[]> | Promise<Observable<User[]>> {
     return next
       .handle()
       .pipe(

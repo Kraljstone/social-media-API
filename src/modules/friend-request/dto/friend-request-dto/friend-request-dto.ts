@@ -1,5 +1,5 @@
 export interface FriendRequestDto {
-  senderUsername: string;
-  receiverUsername: string;
+  sender: string;
+  receiver: string;
   status: string;
 }

@@ -1,6 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IFriendRequestService } from './friend-request';
-import { FriendRequestDetails } from 'src/utils/types';
+import {
+  FriendRequestDetails,
+  UpdateFriendRequestDetails,
+} from 'src/utils/types';
 import { InjectModel } from '@nestjs/mongoose';
 import { FriendRequests } from 'src/schemas/FriendRequests.schema';
 import { Model } from 'mongoose';
@@ -14,29 +17,25 @@ export class FriendRequestService implements IFriendRequestService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async create({
-    senderUsername,
-    receiverUsername,
+  async createFriendRequest({
+    sender,
+    receiver,
     status,
   }: FriendRequestDetails) {
-    const existingSender = await this.userModel.findOne({
-      username: senderUsername,
-    });
+    const existingSender = await this.userModel.findOne({ sender });
 
-    const existingReceiver = await this.userModel.findOne({
-      username: receiverUsername,
-    });
+    const existingReceiver = await this.userModel.findOne({ receiver });
 
     if (!existingSender) {
       throw new HttpException(
-        `No user found with username ${senderUsername}`,
+        `No user found with username ${sender}`,
         HttpStatus.NOT_FOUND,
       );
     }
 
     if (!existingReceiver) {
       throw new HttpException(
-        `No user found with username ${receiverUsername}`,
+        `No user found with username ${receiver}`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -49,8 +48,8 @@ export class FriendRequestService implements IFriendRequestService {
     }
 
     const existingFriendRequest = await this.friendRequestModel.findOne({
-      sender: senderUsername,
-      receiver: receiverUsername,
+      sender: sender,
+      receiver: receiver,
     });
 
     if (existingFriendRequest) {
@@ -61,27 +60,46 @@ export class FriendRequestService implements IFriendRequestService {
     }
 
     const newFriendRequest = new this.friendRequestModel({
-      sender: senderUsername,
-      receiver: receiverUsername,
+      sender: sender,
+      receiver: receiver,
       status,
     });
     return await newFriendRequest.save();
   }
 
-  // async findAll() {
-  //   return await FriendRequest.find();
-  // }
+  getAllFriendRequests(): Promise<FriendRequestDetails[]> {
+    return this.friendRequestModel.find();
+  }
 
-  // async findOne(id: number) {
-  //   return await FriendRequest.findOne(id);
-  // }
+  async getFriendRequestById(id: string): Promise<FriendRequestDetails> {
+    const friendRequest = await this.friendRequestModel.findOne({ _id: id });
+    if (!friendRequest) {
+      throw new HttpException('Friend request not found', 404);
+    }
 
-  // async update(id: number, updateFriendRequestDto: UpdateFriendRequestDto) {
-  //   const friendRequest = await FriendRequest.findOne(id);
-  //   friendRequest.status = updateFriendRequestDto.status;
+    return friendRequest.toObject();
+  }
 
-  //   return await friendRequest.save();
-  // }
+  async updateFriendRequest(
+    id: string,
+    { sender, receiver, status }: UpdateFriendRequestDetails,
+  ) {
+    const friendRequest = await this.friendRequestModel.findOne({ _id: id });
+
+    if (!friendRequest) {
+      throw new HttpException('Friend request not found', 404);
+    }
+
+    friendRequest.status = status;
+
+    await friendRequest.save();
+
+    return {
+      sender,
+      receiver,
+      status: friendRequest.status,
+    };
+  }
 
   // async remove(id: string) {
   //   await FriendRequest.delete(id);
