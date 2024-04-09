@@ -7,6 +7,7 @@ import {
   HttpException,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { FriendRequestDto } from './dto/friend-request-dto/friend-request-dto';
 import { IFriendRequestService } from './friend-request';
@@ -55,6 +56,19 @@ export class FriendRequestController {
       id,
       updateFriendRequestDto,
     );
+    if (!friendRequest)
+      throw new HttpException('Friend request not found', 404);
+
+    return friendRequest;
+  }
+
+  @Delete(':id')
+  async removeFriendRequest(@Param('id') id: string) {
+    const isValid = mongoose.Types.ObjectId.isValid(id);
+    if (!isValid) throw new HttpException('Request already deleted', 404);
+
+    const friendRequest =
+      await this.friendRequestService.removeFriendRequestById(id);
     if (!friendRequest)
       throw new HttpException('Friend request not found', 404);
 

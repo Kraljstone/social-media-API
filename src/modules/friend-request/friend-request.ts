@@ -11,5 +11,5 @@ export interface IFriendRequestService {
     id: string,
     updateFriendRequestDto: UpdateFriendRequestDetails,
   ): Promise<UpdateFriendRequestDetails>;
-  // remove(id: number): Promise<void>;
+  removeFriendRequestById(id: string): Promise<object>;
 }

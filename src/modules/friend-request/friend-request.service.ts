@@ -101,7 +101,10 @@ export class FriendRequestService implements IFriendRequestService {
     };
   }
 
-  // async remove(id: string) {
-  //   await FriendRequest.delete(id);
-  // }
+  async removeFriendRequestById(id: string) {
+    await this.friendRequestModel.findByIdAndDelete(id);
+    return {
+      message: 'Friend request removed',
+    };
+  }
 }
