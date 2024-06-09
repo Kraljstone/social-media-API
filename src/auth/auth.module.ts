@@ -11,7 +11,7 @@ import { Services } from 'src/utils/constants';
 import { UsersService } from 'src/modules/users/users.service';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
 import { userSettingsSchema } from 'src/schemas/UserSettings.schema';
-import { SessionSerializer } from './utils/seassionSerializer';
+import { SessionSerializer } from './utils/sessionSerializer';
 import { PassportModule } from '@nestjs/passport';
 
 @Module({
