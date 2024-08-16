@@ -8,13 +8,18 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FriendRequestDto } from './dto/friend-request-dto/friend-request-dto';
 import { IFriendRequestService } from './friend-request';
 import { Routes, Services } from 'src/utils/constants';
 import mongoose from 'mongoose';
+import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller(Routes.FRIEND_REQUEST)
+@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
 export class FriendRequestController {
   constructor(
     @Inject(Services.FRIEND_REQUEST)

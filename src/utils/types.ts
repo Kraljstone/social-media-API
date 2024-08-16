@@ -49,3 +49,9 @@ export type UpdateFriendRequestDetails = {
   receiver: string;
   status: string;
 };
+
+export type CreateNotificationDetails = {
+  title: string;
+  message: string;
+  userId: string;
+};

@@ -11,6 +11,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from './utils/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { FriendRequestModule } from './modules/friend-request/friend-request.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FriendRequestModule } from './modules/friend-request/friend-request.mod
     GatewayModule,
     ChatModule,
     FriendRequestModule,
+    NotificationModule,
   ],
 
   providers: [

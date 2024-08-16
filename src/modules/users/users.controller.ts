@@ -22,12 +22,12 @@ import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 import { UsersInterceptor } from './interceptors/users.interceptor';
 
 @Controller(Routes.USERS)
+@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(@Inject(Services.USERS) private usersService: IUserService) {}
 
   @Get()
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(UsersInterceptor)
   getUsers(): Promise<User[]> {
     return this.usersService.getUsers();
@@ -35,8 +35,6 @@ export class UsersController {
 
   // @route api/users/:id
   @Get(':id')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string): Promise<User> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);
@@ -49,8 +47,6 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async updateUser(
     @Param('id') id: string,
@@ -67,8 +63,6 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   async deleteUser(@Param('id') id: string): Promise<object> {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('User not found', 404);

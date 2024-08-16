@@ -22,22 +22,20 @@ import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller(Routes.CHAT)
+@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
 export class ChatController {
   constructor(
     @Inject(Services.CHAT) private readonly chatService: IChatService,
   ) {}
 
   @Post()
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async createChatRoom(@Body() createChatRoomDto: CreateChatRoomDto) {
     return this.chatService.createChatRoom(createChatRoomDto);
   }
 
   @Post(':roomId/join')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async joinChatRoom(
     @Param('roomId') roomId: string,
@@ -47,8 +45,6 @@ export class ChatController {
   }
 
   @Post(':roomId/leave')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async leaveChatRoom(
     @Param('roomId') roomId: string,
@@ -59,8 +55,6 @@ export class ChatController {
 
   @SkipThrottle()
   @Post(':roomId/messages')
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async sendMessage(
     @Param('roomId') roomId: string,

@@ -18,14 +18,14 @@ import { Services } from 'src/utils/constants';
 import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.POSTS)
+@UseGuards(AuthenticatedGuard)
+@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(@Inject(Services.POSTS) private postsService: IPostsService) {}
 
   // @route  api/posts
 
   @Post()
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   createPost(@Body() createPostsDto: CreatePostsDto): { message: string } {
     this.postsService.createPost(createPostsDto);
@@ -33,8 +33,6 @@ export class PostsController {
   }
 
   @Get()
-  @UseGuards(AuthenticatedGuard)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   getPosts(
     @Body('userId') userId: string,
