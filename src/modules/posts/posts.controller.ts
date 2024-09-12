@@ -8,7 +8,7 @@ import {
   Query,
   Inject,
 } from '@nestjs/common';
-import { CreatePostsDto } from './dto/create-posts.dto/create-posts.dto';
+import { CreatePostDto } from './dto/create-post.dto/create-post.dto';
 import { IPostsService } from './posts';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
@@ -27,15 +27,17 @@ export class PostsController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  createPost(@Body() createPostsDto: CreatePostsDto): { message: string } {
-    this.postsService.createPost(createPostsDto);
-    return { message: 'Post created successfully' };
+  async createPost(
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<{ message: string; post: PostEntity }> {
+    const post = await this.postsService.createPost(createPostDto);
+    return { message: 'Post created successfully', post };
   }
 
   @Get()
   @UsePipes(new ValidationPipe())
   getPosts(
-    @Body('userId') userId: string,
+    @Query('userId') userId: string,
     @Query('sortBy') sortBy?: 'asc' | 'desc',
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
