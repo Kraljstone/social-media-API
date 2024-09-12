@@ -1,15 +1,24 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsArray,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
   title: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(500)
   contents: string;
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @IsOptional()
+  location?: [number, number];
 
   @IsString()
   @IsNotEmpty()

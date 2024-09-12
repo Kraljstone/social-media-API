@@ -2,19 +2,18 @@ import {
   Body,
   Controller,
   Post,
-  Get,
   UsePipes,
   ValidationPipe,
-  Query,
   Inject,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto/create-post.dto';
 import { IPostsService } from './posts';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Routes } from 'src/utils/constants';
-import { Services } from 'src/utils/constants';
+import { Routes, Services } from 'src/utils/constants';
 import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 
 @Controller(Routes.POSTS)
@@ -23,8 +22,7 @@ import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
 export class PostsController {
   constructor(@Inject(Services.POSTS) private postsService: IPostsService) {}
 
-  // @route  api/posts
-
+  // @route POST api/posts
   @Post()
   @UsePipes(new ValidationPipe())
   async createPost(
@@ -34,14 +32,13 @@ export class PostsController {
     return { message: 'Post created successfully', post };
   }
 
-  @Get()
-  @UsePipes(new ValidationPipe())
-  getPosts(
-    @Query('userId') userId: string,
-    @Query('sortBy') sortBy?: 'asc' | 'desc',
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-  ): Promise<PostEntity[]> {
-    return this.postsService.getPosts(userId, sortBy, page, limit);
+  // @route GET api/posts/near?longitude=123&latitude=123&radius=123
+  @Get('/near')
+  async getPostsNearLocation(
+    @Query('longitude') longitude: number,
+    @Query('latitude') latitude: number,
+    @Query('radius') radius: number,
+  ): Promise<{ post: PostEntity; locationName: string }[]> {
+    return this.postsService.getPostsNearLocation(longitude, latitude, radius);
   }
 }

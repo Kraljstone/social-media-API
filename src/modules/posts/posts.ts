@@ -13,4 +13,10 @@ export interface IPostsService {
     page?: number,
     limit?: number,
   ): Promise<PostEntity[]>;
+
+  getPostsNearLocation(
+    longitude: number,
+    latitude: number,
+    radius: number,
+  ): Promise<{ post: PostEntity; locationName: string }[]>;
 }
