@@ -7,11 +7,11 @@ import {
   Inject,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto/create-post.dto';
-import { IPostsService } from './posts';
+import { CreatePostDto } from '../dto/create-post.dto/create-post.dto';
+import { IPostsService } from '../posts';
 import { PostEntity } from 'src/schemas/Post.schema';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
@@ -27,9 +27,19 @@ export class PostsController {
   @UsePipes(new ValidationPipe())
   async createPost(
     @Body() createPostDto: CreatePostDto,
-  ): Promise<{ message: string; post: PostEntity }> {
+  ): Promise<{ message: string; post: any }> {
     const post = await this.postsService.createPost(createPostDto);
-    return { message: 'Post created successfully', post };
+
+    const formattedPost = {
+      title: post.title,
+      contents: post.contents,
+      location: post.location,
+      _id: post._id,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    };
+
+    return { message: 'Post created successfully', post: formattedPost };
   }
 
   // @route GET api/posts/near?longitude=123&latitude=123&radius=123

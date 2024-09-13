@@ -2,9 +2,10 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
+import { IMentionsService } from '../posts';
 
 @Injectable()
-export class MentionsService {
+export class MentionsService implements IMentionsService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
@@ -14,6 +15,10 @@ export class MentionsService {
     const mentionedUsernames = Array.from(content.matchAll(mentionRegex)).map(
       (match) => match[1],
     );
+
+    if (mentionedUsernames.length === 0) {
+      return [];
+    }
 
     // Fetch users that are mentioned
     const mentionedUsers = await this.userModel

@@ -1,26 +1,23 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsArray,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
+import { IsOptional, IsString, IsArray } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
-  @IsNotEmpty()
   title: string;
 
   @IsString()
-  @IsNotEmpty()
   contents: string;
 
-  @IsArray()
-  @IsNumber({}, { each: true })
   @IsOptional()
   location?: [number, number];
 
+  @IsOptional()
+  @IsArray()
+  mentions?: string[];
+
+  @IsOptional()
+  @IsArray()
+  hashtags?: string[];
+
   @IsString()
-  @IsNotEmpty()
   userId: string;
 }

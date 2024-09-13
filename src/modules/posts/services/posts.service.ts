@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
@@ -7,8 +7,8 @@ import { MentionsAndHashtagsEntity } from 'src/schemas/MentionsAndHashtags.schem
 import { CreatePostDto } from '../dto/create-post.dto/create-post.dto';
 import { getLocationName } from '../getLocationName';
 import { IPostsService } from '../posts';
-import { MentionsService } from './mentions.service';
-import { HashtagsService } from './hashtags.service';
+import { Services } from 'src/utils/constants';
+import { IMentionsService, IHashtagsService } from '../posts';
 
 @Injectable()
 export class PostsService implements IPostsService {
@@ -17,35 +17,37 @@ export class PostsService implements IPostsService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(MentionsAndHashtagsEntity.name)
     private readonly mentionsAndHashtagsModel: Model<MentionsAndHashtagsEntity>,
-    private readonly mentionsService: MentionsService,
-    private readonly hashtagsService: HashtagsService,
+    @Inject(Services.MENTIONS)
+    private readonly mentionsService: IMentionsService,
+    @Inject(Services.HASHTAGS)
+    private readonly hashtagsService: IHashtagsService,
   ) {}
 
-  async createPost(createPostDto: CreatePostDto) {
+  async createPost(createPostDto: CreatePostDto): Promise<PostEntity> {
     const { contents, location } = createPostDto;
 
-    // Extract mentions and hashtags
+    console.log(contents);
+
     const mentions = await this.mentionsService.extractMentions(contents);
     const hashtags = this.hashtagsService.extractHashtags(contents);
 
-    // Create and save a new MentionsAndHashtagsEntity
-    const mentionsAndHashtags = new this.mentionsAndHashtagsModel({
+    const newMentionsAndHashtags = new this.mentionsAndHashtagsModel({
       contents,
-      mentions,
-      hashtags,
+      mentions: mentions || [],
+      hashtags: hashtags || [],
     });
-    await mentionsAndHashtags.save();
+    await newMentionsAndHashtags.save();
 
     // Create and save the new post
     const newPost = new this.postModel({
       ...createPostDto,
-      mentionsAndHashtags: mentionsAndHashtags._id,
+      mentionsAndHashtags: newMentionsAndHashtags._id,
       ...(location && { location: { type: 'Point', coordinates: location } }),
     });
 
     await newPost.save();
 
-    return newPost.populate('mentionsAndHashtags');
+    return newPost;
   }
 
   async getPosts(
@@ -86,6 +88,8 @@ export class PostsService implements IPostsService {
     latitude: number,
     radius: number,
   ): Promise<{ post: PostEntity; locationName: string }[]> {
+    const locationName = await getLocationName(longitude, latitude);
+
     const posts = await this.postModel.find({
       location: {
         $near: {
@@ -94,8 +98,6 @@ export class PostsService implements IPostsService {
         },
       },
     });
-
-    const locationName = await getLocationName(longitude, latitude);
 
     return posts.map((post) => ({
       post,
