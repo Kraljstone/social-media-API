@@ -6,8 +6,10 @@ import {
   MentionsAndHashtagsEntity,
   MentionsAndHashtagsSchema,
 } from 'src/schemas/MentionsAndHashtags.schema';
-import { PostsService } from './posts.service';
+import { PostsService } from './services/posts.service';
 import { PostsController } from './posts.controller';
+import { MentionsService } from './services/mentions.service';
+import { HashtagsService } from './services/hashtags.service';
 import { Services } from 'src/utils/constants';
 
 @Module({
@@ -33,6 +35,8 @@ import { Services } from 'src/utils/constants';
       provide: Services.POSTS,
       useClass: PostsService,
     },
+    MentionsService,
+    HashtagsService,
   ],
 })
 export class PostsModule {}

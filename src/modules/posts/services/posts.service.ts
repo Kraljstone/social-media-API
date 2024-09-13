@@ -4,9 +4,11 @@ import { Model } from 'mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
 import { User } from 'src/schemas/User.schema';
 import { MentionsAndHashtagsEntity } from 'src/schemas/MentionsAndHashtags.schema';
-import { CreatePostDto } from './dto/create-post.dto/create-post.dto';
-import { getLocationName } from './getLocationName';
-import { IPostsService } from './posts';
+import { CreatePostDto } from '../dto/create-post.dto/create-post.dto';
+import { getLocationName } from '../getLocationName';
+import { IPostsService } from '../posts';
+import { MentionsService } from './mentions.service';
+import { HashtagsService } from './hashtags.service';
 
 @Injectable()
 export class PostsService implements IPostsService {
@@ -15,14 +17,16 @@ export class PostsService implements IPostsService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(MentionsAndHashtagsEntity.name)
     private readonly mentionsAndHashtagsModel: Model<MentionsAndHashtagsEntity>,
+    private readonly mentionsService: MentionsService,
+    private readonly hashtagsService: HashtagsService,
   ) {}
 
   async createPost(createPostDto: CreatePostDto) {
     const { contents, location } = createPostDto;
 
     // Extract mentions and hashtags
-    const mentions = await this.extractMentions(contents);
-    const hashtags = this.extractHashtags(contents);
+    const mentions = await this.mentionsService.extractMentions(contents);
+    const hashtags = this.hashtagsService.extractHashtags(contents);
 
     // Create and save a new MentionsAndHashtagsEntity
     const mentionsAndHashtags = new this.mentionsAndHashtagsModel({
@@ -35,38 +39,13 @@ export class PostsService implements IPostsService {
     // Create and save the new post
     const newPost = new this.postModel({
       ...createPostDto,
-      mentionsAndHashtags: mentionsAndHashtags._id, // Store reference to mentions and hashtags
-      ...(location && { location: { type: 'Point', coordinates: location } }), // Add location if provided
+      mentionsAndHashtags: mentionsAndHashtags._id,
+      ...(location && { location: { type: 'Point', coordinates: location } }),
     });
 
     await newPost.save();
 
-    // Populate mentions and hashtags in the response
-    return newPost.populate('mentionsAndHashtags'); // Populating the field
-  }
-
-  private async extractMentions(content: string): Promise<User[]> {
-    const mentionRegex = /@(\w+)/g;
-    const mentionedUsernames = Array.from(content.matchAll(mentionRegex)).map(
-      (match) => match[1],
-    );
-
-    // Fetch users that are mentioned
-    const mentionedUsers = await this.userModel
-      .find({ username: { $in: mentionedUsernames } })
-      .exec();
-
-    // Error handling if no mentioned users are found
-    if (mentionedUsers.length === 0) {
-      throw new HttpException('No valid mentions found', HttpStatus.NOT_FOUND);
-    }
-
-    return mentionedUsers;
-  }
-
-  private extractHashtags(content: string): string[] {
-    const hashtagRegex = /#(\w+)/g;
-    return Array.from(content.matchAll(hashtagRegex)).map((match) => match[1]);
+    return newPost.populate('mentionsAndHashtags');
   }
 
   async getPosts(
@@ -87,8 +66,8 @@ export class PostsService implements IPostsService {
     let query = this.postModel.find().populate({
       path: 'mentionsAndHashtags',
       populate: {
-        path: 'mentions', // Populate the mentioned users' details (e.g., username)
-        select: 'username', // Select only the username field
+        path: 'mentions',
+        select: 'username',
       },
     });
 
