@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile # Ensure you have a Dockerfile in the project root
+    ports:
+      - '3000:3000' # Map port 3000 of the host to port 3000 of the container
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/mydatabase # Connection string for MongoDB
+      REDIS_URL: redis://redis:6379 # Connection string for Redis
+    depends_on:
+      - mongo # Ensure mongo service starts before app
+      - redis # Ensure redis service starts before app
+
+  mongo:
+    image: mongo:latest # Use the latest MongoDB image from Docker Hub
+    ports:
+      - '27017:27017' # Map MongoDB port
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root # Set root username (optional)
+      MONGO_INITDB_ROOT_PASSWORD: password # Set root password (optional)
+    volumes:
+      - mongo_data:/data/db # Persist data in a named volume
+
+  redis:
+    image: redis:alpine # Use the latest Redis image from Docker Hub
+    ports:
+      - '6379:6379' # Map Redis port
+    volumes:
+      - redis_data:/data # Persist Redis data in a named volume
+
+volumes:
+  mongo_data: # Define a named volume for MongoDB data persistence
+  redis_data: # Define a named volume for Redis data persistence

@@ -15,12 +15,17 @@ import { PostEntity } from 'src/schemas/Post.schema';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthenticatedGuard } from 'src/auth/guards/local.guard';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Controller(Routes.POSTS)
 @UseGuards(AuthenticatedGuard)
 @UseGuards(JwtAuthGuard)
 export class PostsController {
-  constructor(@Inject(Services.POSTS) private postsService: IPostsService) {}
+  constructor(
+    @Inject(Services.POSTS) private postsService: IPostsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   // @route POST api/posts
   @Post()
@@ -49,6 +54,27 @@ export class PostsController {
     @Query('latitude') latitude: number,
     @Query('radius') radius: number,
   ): Promise<{ post: PostEntity; locationName: string }[]> {
-    return this.postsService.getPostsNearLocation(longitude, latitude, radius);
+    const cacheKey = `posts_near_${longitude}_${latitude}_${radius}`;
+
+    // Check if posts are in cache
+    const cachedPosts =
+      await this.cacheManager.get<{ post: PostEntity; locationName: string }[]>(
+        cacheKey,
+      );
+    if (cachedPosts) {
+      return cachedPosts;
+    }
+
+    // If not cached, fetch from service
+    const posts = await this.postsService.getPostsNearLocation(
+      longitude,
+      latitude,
+      radius,
+    );
+
+    // Cache the fetched posts
+    await this.cacheManager.set(cacheKey, posts, 600);
+
+    return posts;
   }
 }

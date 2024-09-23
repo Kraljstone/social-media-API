@@ -12,6 +12,8 @@ import { ThrottlerBehindProxyGuard } from './utils/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { FriendRequestModule } from './modules/friend-request/friend-request.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -25,6 +27,18 @@ import { NotificationModule } from './modules/notification/notification.module';
         limit: 10,
       },
     ]),
+    CacheModule.registerAsync({
+      useFactory: async () => ({
+        store: await redisStore({
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+        }),
+        ttl: 2000,
+      }),
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
     UserModule,
