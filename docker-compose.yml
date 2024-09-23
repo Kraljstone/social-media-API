@@ -9,8 +9,8 @@ services:
       - '3000:3000' # Map port 3000 of the host to port 3000 of the container
     environment:
       NODE_ENV: production
-      MONGO_URI: mongodb://mongo:27017/mydatabase # Connection string for MongoDB
-      REDIS_URL: redis://redis:6379 # Connection string for Redis
+      MONGO_URI: ${MONGO_URI} # Connection string for MongoDB
+      REDIS_URL: ${REDIS_URL} # Connection string for Redis
     depends_on:
       - mongo # Ensure mongo service starts before app
       - redis # Ensure redis service starts before app
