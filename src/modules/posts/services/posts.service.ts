@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PostEntity } from 'src/schemas/Post.schema';
@@ -9,6 +9,11 @@ import { getLocationName } from '../getLocationName';
 import { IPostsService } from '../posts';
 import { Services } from 'src/utils/constants';
 import { IMentionsService, IHashtagsService } from '../posts';
+import {
+  PostNotFoundException,
+  UserNotFoundException,
+} from '../../../utils/custom-exceptions';
+
 @Injectable()
 export class PostsService implements IPostsService {
   constructor(
@@ -52,7 +57,7 @@ export class PostsService implements IPostsService {
   ): Promise<PostEntity[]> {
     const user = await this.userModel.findById(userId);
     if (!user) {
-      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      throw new UserNotFoundException(userId);
     }
 
     const skip = (page - 1) * limit;
@@ -96,5 +101,13 @@ export class PostsService implements IPostsService {
       post,
       locationName,
     }));
+  }
+
+  async getPostById(postId: string): Promise<PostEntity> {
+    const post = await this.postModel.findById(postId);
+    if (!post) {
+      throw new PostNotFoundException(postId);
+    }
+    return post;
   }
 }
