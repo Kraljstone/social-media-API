@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/User.schema';
 import { UserSettings } from 'src/schemas/UserSettings.schema';
-import { CreateUserDetails } from 'src/utils/types';
+import { CreateUserDetails, UpdateUserDetails } from 'src/utils/types';
 import { hashPassword } from 'src/utils/helpers';
-import { UpdateUserDetails } from 'src/utils/types';
 import { IUserService } from './user';
+import { UserNotFoundException } from 'src/utils/custom-exceptions';
 
 @Injectable()
 export class UsersService implements IUserService {
@@ -48,19 +48,38 @@ export class UsersService implements IUserService {
     return newUser.save();
   }
 
-  getUsers() {
+  async getUsers() {
     return this.userModel.find().populate(['settings', 'posts']);
   }
 
-  getUserById(id: string) {
-    return this.userModel.findById(id).populate('settings');
+  async getUserById(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).populate('settings');
+    if (!user) {
+      throw new UserNotFoundException(id);
+    }
+    return user;
   }
 
-  updateUser(id: string, updateUserDto: UpdateUserDetails) {
-    return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDetails,
+  ): Promise<User> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      updateUserDto,
+      { new: true },
+    );
+    if (!updatedUser) {
+      throw new UserNotFoundException(id);
+    }
+    return updatedUser;
   }
 
-  deleteUser(id: string) {
-    return this.userModel.findByIdAndDelete(id);
+  async deleteUser(id: string): Promise<object> {
+    const deletedUser = await this.userModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new UserNotFoundException(id);
+    }
+    return { message: 'User deleted successfully' };
   }
 }

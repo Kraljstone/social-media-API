@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { AllExceptionsFilter } from './utils/all-exceptions.filter';
+import { HttpAdapterHost } from '@nestjs/core';
 
 (async function bootstrap() {
   const { PORT } = process.env;
@@ -23,6 +25,9 @@ import * as passport from 'passport';
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  const httpAdapter = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   await app.listen(PORT);
 })();

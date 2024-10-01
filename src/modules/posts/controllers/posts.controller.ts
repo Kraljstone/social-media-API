@@ -29,7 +29,7 @@ export class PostsController {
 
   // @route POST api/posts
   @Post()
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   async createPost(
     @Body() createPostDto: CreatePostDto,
   ): Promise<{ message: string; post: any }> {
